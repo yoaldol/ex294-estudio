@@ -1,0 +1,6 @@
+---
+- name: balancer
+  src: geerlingguy.haproxy
+
+- name: phpinfo
+  src: geerlingguy.php
