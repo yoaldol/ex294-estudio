@@ -1,0 +1,50 @@
+---
+- name: Create & use logical volume
+  hosts: all
+  become: true
+  tasks: 
+    - name: Crear particion
+      parted:
+        device: /dev/nvme0n2
+        number: 1
+        flags: [ lvm ]
+        state: present
+
+    - name: Crear PV
+      lvg:
+        pvs: /dev/nvme0n2p1
+        vg: research
+        state: present
+
+    - name: create lvol
+      lvol:
+        vg: research
+        lv: data
+        size: '1500'
+        force: yes
+      when: ansible_lvm.vgs.research is defined and ansible_lvm.vgs.research.size_g>"1.5"
+
+    - name: create lvol
+      debug:
+        msg: Could not create logical volume of that size
+      when: ansible_lvm.vgs.research is defined and ansible_lvm.vgs.research.size_g<"1.5"
+
+    - name: create lvol
+      lvol:
+        vg: research
+        lv: data
+        size: '800'
+        force: yes
+      when: ansible_lvm.vgs.research is defined and ansible_lvm.vgs.research.size_g<"1.5"
+
+    - name: Create filesystem
+      filesystem:
+        fstype: ext4
+        dev: /dev/research/data
+
+    - name: error msg
+      debug:
+        msg: Volume group done not exist
+      when: ansible_lvm.vgs.research is not defined 
+    
+        

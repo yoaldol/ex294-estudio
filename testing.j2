@@ -1,0 +1,5 @@
+{% for i in groups.webservers %}
+
+server {{ hostvars[i].ansible_default_ipv4.address }}:80 check
+
+{% endfor %}

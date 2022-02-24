@@ -1,0 +1,11 @@
+---
+- name: Install role timesync
+  hosts: all
+  become: true
+  vars:
+    timesync_ntp_servers:
+      - hostname: 0.south-america.pool.ntp.org
+        iburst: yes
+
+  roles:
+    - timesync

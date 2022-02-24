@@ -1,0 +1,30 @@
+---
+- name: Install packages in Dev, Test & Prod
+  hosts: dev, test, prod
+  become: true
+  tasks:
+    - name: Install php & mariadb
+      yum: 
+        name: "{{ packages }}"
+      vars: 
+        packages: 
+        - php
+        - mariadb
+
+- name: Install Development tools in Dev
+  hosts: dev
+  become: true
+  tasks:
+    - name: install dev tools
+      yum:
+        name: "@Development tools"
+        state: present
+
+- name: Install updates in Dev
+  hosts: dev
+  become: true
+  tasks:
+    - name: Install updates
+      yum:
+        name: '*'
+        state: latest

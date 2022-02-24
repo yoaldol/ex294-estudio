@@ -1,0 +1,39 @@
+---
+- name: Generate hardware report
+  hosts: all
+  become: true
+  tasks:
+    - name: Download hwreport
+      get_url:
+        url: https://gist.githubusercontent.com/yoaldol/6e0bb5436bad530efda14b476bef4886/raw/495299c339132a3418d965cd7ee9a105e8047fec/hwreport.empty
+        dest: /root/hwreport.txt
+        
+    - name: copy hostname
+      lineinfile:
+        path: /root/hwreport.txt
+        regexp: '^HOST='
+        line: HOST={{ ansible_hostname }}
+
+    - name: copy memory
+      lineinfile:
+        path: /root/hwreport.txt
+        regexp: '^MEMORY='
+        line: MEMORY={{ ansible_memtotal_mb }}
+
+    - name: copy bios version
+      lineinfile:
+        path: /root/hwreport.txt
+        regexp: '^BIOS='
+        line: BIOS={{ ansible_bios_version }}
+
+    - name: copy DISK A
+      lineinfile:
+        path: /root/hwreport.txt
+        regexp: '^DISK_SDA_SIZE='
+        line: DISK_SDA_SIZE={{ ansible_devices.nvme0n1.size }}
+
+    - name: copy DISK B
+      lineinfile:
+        path: /root/hwreport.txt
+        regexp: '^DISK_SDB_SIZE='
+        line: DISK_SDB_SIZE={{ ansible_devices.nvme0n2.size | default('NONE', true) }}

@@ -1,0 +1,42 @@
+---
+- name: Create and user account developer
+  hosts: dev, test
+  become: true
+  vars_files:
+    - locker.yml
+    - user_list.yml
+  tasks:
+    - name: create group developer
+      group:
+        name: developer
+        state: present
+
+    - name: create user developer
+      user:
+        name: "{{ item.name }}"
+        password: "{{ pw_developer | password_hash('sha512')}}"
+        group: developer
+      loop:
+        "{{ users }}"
+      when: item.job == 'developer'
+        
+- name: Create and user account opsmgr
+  hosts: prod
+  become: true
+  vars_files:
+    - locker.yml
+    - user_list.yml
+  tasks:
+    - name: create group opsmgr
+      group:
+        name: opsmgr
+        state: present
+
+    - name: create user manager
+      user:
+        name: "{{ item.name }}"
+        password: "{{ pw_manager | password_hash('sha512')}}"
+        group: opsmgr
+      loop:
+        "{{ users }}"
+      when: item.job == 'manager'

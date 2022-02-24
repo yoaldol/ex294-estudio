@@ -1,0 +1,16 @@
+[dev]
+server-noda.ylopez.local
+
+[test]
+server-node.ylopez.local
+
+[prod]
+server-nodi.ylopez.local
+server-nodo.ylopez.local
+
+[balancers]
+server-nodu.ylopez.local
+
+[webservers:children]
+prod
+

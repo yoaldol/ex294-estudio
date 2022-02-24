@@ -1,0 +1,9 @@
+---
+- name: testing 
+  hosts: webservers
+  become: true
+  tasks:
+    - name: copy template
+      template:
+        src: testing.j2
+        dest: /root/testing
